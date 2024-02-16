@@ -1,0 +1,27 @@
+# EXAMPLE USAGE:
+#
+#   Refer for explanation to following link:
+#   https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md
+
+# Which added stage_fixed option
+min_version: 1.5.0
+
+# Can be tweaked to avoid printing output as your preference into .lefthook.local.yml
+skip_output:
+  # - execution      # Skips printing any execution logs (but prints if the execution failed)
+  - execution_out  # Skips printing execution output (but still prints failed commands output)  -
+  # - execution_info # Skips printing `EXECUTE > ...` logging
+
+
+pre-push: &pre-push
+  parallel: true
+  commands:
+    actionlint:
+      glob: ".github/workflows/**.*"
+      run: actionlint
+
+pre-commit:
+  commands:
+    actionlint:
+      glob: ".github/workflows/**.*"
+      run: actionlint
