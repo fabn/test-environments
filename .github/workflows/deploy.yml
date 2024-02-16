@@ -1,0 +1,36 @@
+name: Test deploy on environments
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  plan:
+    name: Plan deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to dev
+        run: echo "Create plan to deploy" > ${{github.run_id}}.txt
+      - name: Upload artifacts
+        uses: actions/upload-artifacts@v4
+        with:
+          name: plan
+          path: ${{github.run_id}}.txt
+
+  apply:
+    name: Apply plan
+    runs-on: ubuntu-latest
+    # Protected environment that require manual approval
+    environment: production
+    steps:
+      - name: Download plan
+        uses: actions/download-artifact@v4
+        with:
+          name: plan
+      - name: Check plan content
+        run: |
+          ls -l ${{github.workspace}}
+          cat ${{github.run_id}}.txt
+      - name: Deploy to prod
+        run: echo "Deploying to prod"
